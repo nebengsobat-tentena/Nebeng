@@ -191,6 +191,19 @@ Bagi yang searah dan mau ikut nebeng aman, langsung klik link chat WA saya di ba
             navigator.clipboard.writeText(copyText.value);
             alert("Pengumuman berhasil disalin! Silakan kirimkan ke grup WhatsApp sekolah atau kampus.");
         }
-    </script>
+<script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbx1r6604N9KWke-IotKx9o9UfGwdYW6ZBsg5ufjHxg_AOFK5qUj5yX00tQ0n4UPjEruDw/exec';
+  const form = document.querySelector('form');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+      .then(response => {
+        alert("Mantap! Jok kosong berhasil dibagikan.");
+        form.reset();
+      })
+      .catch(error => console.error('Error!', error.message))
+  });
+</script>
 </body>
 </html>
