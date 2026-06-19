@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 
-        <button type="button" onclick="prosesTebengan()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 rounded-xl transition-colors mt-2 shadow-sm">
+        <button type="button" onclick="prosesTebengan()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition">
     🚀 Buat Pengumuman Komunitas
 </button>
             </div>
@@ -93,30 +93,27 @@
         <p>© 2026 NebengSobat Tentena by RHS. All rights reserved.</p>
     </footer>
 <script>
-    function getLokasiOtomatis() {
-        if (!navigator.geolocation) return alert("Browser tidak mendukung GPS.");
-        navigator.geolocation.getCurrentPosition((pos) => {
-            document.getElementById('geo-link').value = `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`;
-            document.getElementById('gps-status').innerText = "✅ Lokasi terkunci!";
-        });
-    }
-
     async function prosesTebengan() {
-        const form = document.getElementById('formTebengan');
+        const form = document.getElementById('FormTebengan');
         const formData = new FormData(form);
         const scriptURL = 'https://script.google.com/macros/s/AKfycbx1r6604N9KWke-IotKx9o9UfGwdYW6ZBsg5ufjHxg_AOFK5qUj5yX00tQ0n4UPjEruDw/exec';
 
+        // 1. Kirim ke Database
         try {
             await fetch(scriptURL, { method: 'POST', body: formData });
-            alert("Data tersimpan ke database!");
-        } catch(e) { console.error(e); }
+            alert("Mantap! Data berhasil dikirim ke database.");
+        } catch(e) { 
+            console.error(e); 
+            alert("Gagal kirim ke database.");
+        }
 
+        // 2. Tampilkan Hasil ke Layar
         const name = document.getElementById('driver-name').value;
         const to = document.getElementById('route-to').value;
         const wa = document.getElementById('driver-wa').value;
         const maps = document.getElementById('geo-link').value;
         
-        const template = `✨ [INFO NEBENG] ✨\nHalo, saya ${name}. Mau ke ${to}. Yuk nebeng!\nLokasi: ${maps}\nWA: ${wa}`;
+        const template = `✨ [INFO NEBENG SOBAT TENTENA] ✨\nHalo, saya ${name}. Mau ke ${to}. Yuk nebeng!\nLokasi: ${maps}\nWA: ${wa}`;
         
         document.getElementById('wa-text-result').value = template;
         document.getElementById('output-section').classList.remove('hidden');
