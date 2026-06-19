@@ -70,9 +70,9 @@
                     </div>
                 </div>
                 
-        <button type="button" onclick="prosesTebengan()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 ...">
+        <button type="button" onclick="prosesTebengan()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 rounded-xl transition-colors mt-2 shadow-sm">
     🚀 Buat Pengumuman Komunitas
-        </button>
+</button>
             </div>
         </form>
 
@@ -92,20 +92,25 @@
     <footer class="text-center py-4 text-slate-500 text-sm">
         <p>© 2026 NebengSobat Tentena by RHS. All rights reserved.</p>
     </footer>
+<script>
+    function getLokasiOtomatis() {
+        if (!navigator.geolocation) return alert("Browser tidak mendukung GPS.");
+        navigator.geolocation.getCurrentPosition((pos) => {
+            document.getElementById('geo-link').value = `https://www.google.com/maps/search/?api=1&query=${pos.coords.latitude},${pos.coords.longitude}`;
+            document.getElementById('gps-status').innerText = "✅ Lokasi terkunci!";
+        });
+    }
 
-    <script>
-    // FUNGSI INI AKAN MENGHUBUNGKAN FORM KE DATABASE DAN MEMBUAT TEKS WA
     async function prosesTebengan() {
         const form = document.getElementById('formTebengan');
         const formData = new FormData(form);
         const scriptURL = 'https://script.google.com/macros/s/AKfycbx1r6604N9KWke-IotKx9o9UfGwdYW6ZBsg5ufjHxg_AOFK5qUj5yX00tQ0n4UPjEruDw/exec';
 
-        // Kirim data ke database
         try {
             await fetch(scriptURL, { method: 'POST', body: formData });
+            alert("Data tersimpan ke database!");
         } catch(e) { console.error(e); }
 
-        // Munculkan hasil teks untuk WA
         const name = document.getElementById('driver-name').value;
         const to = document.getElementById('route-to').value;
         const wa = document.getElementById('driver-wa').value;
@@ -115,7 +120,14 @@
         
         document.getElementById('wa-text-result').value = template;
         document.getElementById('output-section').classList.remove('hidden');
-        alert("Data tersimpan dan teks siap disalin!");
+        document.getElementById('output-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function salinTeksWA() {
+        const copyText = document.getElementById('wa-text-result');
+        copyText.select();
+        navigator.clipboard.writeText(copyText.value);
+        alert("Teks berhasil disalin!");
     }
 </script>
 </body>
