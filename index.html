@@ -92,55 +92,12 @@
         <p>© 2026 NebengSobat Tentena by RHS. All rights reserved.</p>
     </footer>
 <script>
-    // Fungsi untuk mendapatkan lokasi (di luar, tidak terperangkap)
-    function getLokasiOtomatis() {
-        const status = document.getElementById('gps-status');
-        if (!navigator.geolocation) return alert("Browser tidak mendukung GPS.");
-
-        status.innerText = "⏳ Sedang mencari lokasi...";
-        navigator.geolocation.getCurrentPosition((pos) => {
-            const link = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-            document.getElementById('geo-link').value = link;
-            status.innerText = "✅ Lokasi berhasil dikunci!";
-        }, () => {
-            status.innerText = "❌ Gagal akses lokasi.";
-            alert("Harap izinkan akses lokasi di pengaturan browser.");
-        });
-    }
-
-    // Fungsi untuk mengirim form
-    async function prosesTebengan() {
-        const form = document.getElementById('formtebengan');
-        const formData = new FormData(form);
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbx1r6604N9KWke-IotKx9o9UfGwdYW6ZBsg5ufjHxg_AOFK5qUj5yX00tQ0n4UPjEruDw/exec';
-
-        try {
-            await fetch(scriptURL, { method: 'POST', body: formData });
-            alert("Mantap! Data berhasil dikirim.");
-        } catch(e) { 
-            console.error(e); 
-            alert("Gagal kirim ke database.");
-        }
-
-        // Tampilkan hasil
-        const name = document.getElementById('driver-name').value;
-        const to = document.getElementById('route-to').value;
-        const wa = document.getElementById('driver-wa').value;
-        const maps = document.getElementById('geo-link').value;
-        
-        const template = `✨ [INFO NEBENG SOBAT TENTENA] ✨\nHalo, saya ${name}. Mau ke ${to}. Yuk nebeng!\nLokasi: ${maps}\nWA: ${wa}`;
-        
-        document.getElementById('wa-text-result').value = template;
-        document.getElementById('output-section').classList.remove('hidden');
-        document.getElementById('output-section').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function salinTeksWA() {
-        const copyText = document.getElementById('wa-text-result');
-        copyText.select();
-        navigator.clipboard.writeText(copyText.value);
-        alert("Teks berhasil disalin!");
-    }
+    <form action="https://api.sheetmonkey.io/form/6xr8JzScmDA7KU84FLjKWp" method="post">
+  <!-- Put HTML input fields in here and see how they fill up your sheet -->
+  <label>Example Field: <input type="text" name="Example Header" required /></label>
+  <input type="hidden" name="Created" value="x-sheetmonkey-current-date-time" />
+  <input type="submit" value="Submit" />
+</form>
 </script>
 </body>
 </html>
