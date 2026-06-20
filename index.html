@@ -177,32 +177,56 @@
     });
 </script>
 <script>
+    // FUNGSI LOAD DATA PROFESIONAL (HANYA MENGGANTI INI)
     async function loadDataTebengan() {
         const container = document.getElementById('modal-data-container');
         container.innerHTML = '<p class="text-white text-center p-4">Memuat data...</p>';
         
         try {
-            const response = await fetch('https://sheetdb.io/api/v1/oi1whu4x406qs?sort_by=Created&sort_order=desc');
+            // Pastikan URL API kamu tetap benar
+            const apiUrl = 'https://sheetdb.io/api/v1/oi1whu4x406qs?sort_by=Created&sort_order=desc'; 
+            const response = await fetch(apiUrl);
             const data = await response.json();
 
             if (data.length > 0) {
                 container.innerHTML = data.map(item => `
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                        <div class="flex justify-between items-center">
-                            <h4 class="font-bold text-blue-800">${item.Nama}</h4>
-                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-md font-bold">${item['Jam Berangkat']}</span>
+                    <div class="bg-white p-4 rounded-2xl shadow-lg border border-gray-100 mx-2 mb-4">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl shadow-inner">
+                                    ${item.Nama ? item.Nama.charAt(0).toUpperCase() : '?'}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-800 text-lg">${item.Nama || 'Anonim'}</h4>
+                                    <span class="text-xs text-yellow-500 font-bold"><i class="fa-solid fa-star"></i> 4.8 (Driver)</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-black text-gray-800">${item['Jam Berangkat'] || '--:--'}</div>
+                            </div>
                         </div>
-                        <p class="text-sm text-gray-600 mt-1">Tujuan: ${item.Tujuan}</p>
-                        <a href="${item['Titik Jemput']}" target="_blank" class="text-xs text-blue-500 underline mt-2 block">
-                            <i class="fa-solid fa-location-dot"></i> Lihat Lokasi Jemput
-                        </a>
+
+                        <div class="mt-4 grid grid-cols-2 gap-2 text-sm text-gray-600 border-t border-gray-100 pt-3">
+                            <p class="truncate"><i class="fa-solid fa-location-dot text-blue-500 mr-1.5"></i> Tujuan: ${item.Tujuan || '-'}</p>
+                            <p><i class="fa-solid fa-car text-blue-500 mr-1.5"></i> Tebengan</p>
+                        </div>
+
+                        <div class="mt-4 flex gap-2.5">
+                            <a href="${item['Titik Jemput'] || '#'}" target="_blank" class="flex-1 text-center bg-gray-100 py-2.5 rounded-xl text-gray-700 font-bold text-sm hover:bg-gray-200 transition active:scale-95">
+                                <i class="fa-solid fa-map-location-dot mr-1"></i> Peta
+                            </a>
+                            <a href="https://wa.me/${item['No WA'] ? item['No WA'].replace(/\D/g,'') : ''}" target="_blank" class="flex-[2] text-center bg-green-600 py-2.5 rounded-xl text-white font-bold text-sm hover:bg-green-700 transition shadow-md shadow-green-100 active:scale-95">
+                                <i class="fa-brands fa-whatsapp mr-1.5"></i> Chat Driver
+                            </a>
+                        </div>
                     </div>
                 `).join('');
             } else {
-                container.innerHTML = '<p class="text-white text-center p-4">Belum ada tebengan.</p>';
+                container.innerHTML = '<p class="text-white text-center p-4">Belum ada jok tersedia, Tabea!</p>';
             }
         } catch (error) {
-            container.innerHTML = '<p class="text-white text-center p-4">Gagal memuat data.</p>';
+            console.error("Fetch Error:", error);
+            container.innerHTML = '<p class="text-white text-center p-4">Gagal memuat data. Periksa API atau koneksi.</p>';
         }
     }
 </script>
