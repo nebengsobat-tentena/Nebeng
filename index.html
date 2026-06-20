@@ -240,15 +240,13 @@
 
 <!-- Modal Donasi (Awalnya tersembunyi) -->
 <div id="modal-donasi" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white p-6 rounded-2xl max-w-sm w-full text-center shadow-2xl">
-        <h3 class="font-bold text-xl mb-2">Dukung NebengSobat!</h3>
-        <p class="text-sm text-gray-600 mb-4">
-            Terima kasih sudah menggunakan aplikasi ini. Traktiran kamu sangat berarti untuk membantu admin terus mengembangkan NebengSobat Tentena bagi mahasiswa lainnya.
-        </p>
-        <!-- Ganti src dengan link QRIS kamu -->
-        <img src="https://i.ibb.co.com/NntJDFR6/QRIS-DANA.jpg" alt="QRIS Donasi" class="w-64 h-64 mx-auto mb-4 border-2 border-gray-100 rounded-lg">
-        <button onclick="tutupDonasi()" class="w-full bg-blue-600 text-white py-2 rounded-xl font-bold">Tutup</button>
-    </div>
+    <!-- Tombol Dukung Admin (Langsung buka aplikasi DANA) -->
+<div class="text-center p-6">
+    <a href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012012021051353281852" target="_blank" class="block bg-blue-600 text-white px-6 py-4 rounded-2xl font-bold shadow-lg hover:bg-blue-700 transition transform hover:scale-105">
+        <i class="fa-solid fa-coffee mr-2"></i> Traktir Admin Kopi (DANA)
+    </a>
+    <p class="text-xs text-gray-500 mt-3 italic">Terima kasih sudah mendukung NebengSobat Tentena!</p>
+</div>
 </div>
 
 <script>
