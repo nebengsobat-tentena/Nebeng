@@ -83,18 +83,35 @@
 
         <!-- Tambahkan script GPS agar tombolnya berfungsi -->
         <script>
-            function getLokasiOtomatis() {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition((position) => {
-                        const link = `https://www.google.com/maps/search/?api=1&query=${position.coords.latitude},${position.coords.longitude}`;
-                        document.getElementById('geo-link').value = link;
-                        alert("Lokasi berhasil didapatkan!");
-                    });
-                } else {
-                    alert("Browser tidak mendukung GPS");
-                }
-            }
-        </script>
+    function getLokasiOtomatis() {
+        // Ambil elemen tombol dan input
+        const btn = event.target.closest('button');
+        const inputLink = document.getElementById('geo-link');
+
+        if (navigator.geolocation) {
+            // Ubah teks tombol jadi proses loading
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengambil Lokasi...';
+            
+            navigator.geolocation.getCurrentPosition((position) => {
+                const link = `https://www.google.com/maps/search/?api=1&query=${position.coords.latitude},${position.coords.longitude}`;
+                
+                // Isi link ke input
+                inputLink.value = link;
+                
+                // Ubah tombol jadi sukses
+                btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Lokasi Berhasil Diambil!';
+                btn.classList.replace('bg-gray-50', 'bg-green-50');
+                btn.classList.replace('text-blue-600', 'text-green-600');
+                btn.classList.replace('border-dashed', 'border-solid');
+            }, (error) => {
+                alert("Gagal ambil lokasi. Pastikan GPS aktif ya!");
+                btn.innerHTML = '<i class="fa-solid fa-location-dot mr-2"></i> Dapatkan Lokasi Saya';
+            });
+        } else {
+            alert("Browser tidak mendukung GPS");
+        }
+    }
+</script>
     </main>
 
     <!-- Bottom Nav -->
