@@ -173,41 +173,33 @@
 </script>
 <script>
     async function loadDataTebengan() {
-    const container = document.getElementById('data-container');
-    try {
-        const response = await fetch('https://sheetdb.io/api/v1/oi1whu4x406qs?sort_by=Created&sort_order=desc');
-        const data = await response.json();
+        const container = document.getElementById('modal-data-container');
+        container.innerHTML = '<p class="text-white text-center p-4">Memuat data...</p>';
+        
+        try {
+            const response = await fetch('https://sheetdb.io/api/v1/oi1whu4x406qs?sort_by=Created&sort_order=desc');
+            const data = await response.json();
 
-        if (data.length > 0) {
-            // Ini blok sukses: Tombol Tutup + Data
-            container.innerHTML = `
-                <button onclick="document.getElementById('data-container').classList.add('hidden')" 
-                        class="w-full bg-gray-200 py-2 rounded-lg text-sm font-bold mb-2">
-                    <i class="fa-solid fa-times"></i> Tutup Daftar
-                </button>
-            ` + data.map(item => `
-                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <div class="flex justify-between items-center">
-                        <h4 class="font-bold text-blue-800">${item.Nama}</h4>
-                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-md font-bold">${item['Jam Berangkat']}</span>
+            if (data.length > 0) {
+                container.innerHTML = data.map(item => `
+                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-blue-800">${item.Nama}</h4>
+                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-md font-bold">${item['Jam Berangkat']}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-1">Tujuan: ${item.Tujuan}</p>
+                        <a href="${item['Titik Jemput']}" target="_blank" class="text-xs text-blue-500 underline mt-2 block">
+                            <i class="fa-solid fa-location-dot"></i> Lihat Lokasi Jemput
+                        </a>
                     </div>
-                    <p class="text-sm text-gray-600 mt-1">Tujuan: ${item.Tujuan}</p>
-                    <a href="${item['Titik Jemput']}" target="_blank" class="text-xs text-blue-500 underline mt-2 block">
-                        <i class="fa-solid fa-location-dot"></i> Lihat Lokasi Jemput
-                    </a>
-                </div>
-            `).join('');
-        } else {
-            container.innerHTML = '<p class="text-gray-500 text-sm">Belum ada tebengan hari ini.</p>';
+                `).join('');
+            } else {
+                container.innerHTML = '<p class="text-white text-center p-4">Belum ada tebengan.</p>';
+            }
+        } catch (error) {
+            container.innerHTML = '<p class="text-white text-center p-4">Gagal memuat data.</p>';
         }
-    } catch (error) {
-        // Ini blok error: Hanya pesan error
-        container.innerHTML = '<p class="text-red-500 text-sm">Gagal memuat data. Silakan coba lagi.</p>';
-        console.error(error);
     }
-}
-
-    loadDataTebengan();
 </script>
 <div id="modal-jok" class="fixed inset-0 bg-blue-900 bg-opacity-90 z-50 hidden flex flex-col">
     <div class="p-4 flex justify-between items-center text-white border-b border-blue-700">
