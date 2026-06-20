@@ -179,46 +179,39 @@
 </script>
 <script>
     async function loadDataTebengan() {
-        const container = document.getElementById('data-container');
-        try {
-            const response = await fetch('https://sheetdb.io/api/v1/oi1whu4x406qs?sort_by=Created&sort_order=desc');
-            const data = await response.json();
+    const container = document.getElementById('data-container');
+    try {
+        const response = await fetch('https://sheetdb.io/api/v1/oi1whu4x406qs?sort_by=Created&sort_order=desc');
+        const data = await response.json();
 
-            if (data.length > 0) {
-                container.innerHTML = data.map(item => `
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                        <div class="flex justify-between items-center">
-                            <h4 class="font-bold text-blue-800">${item.Nama}</h4>
-                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-md font-bold">${item['Jam Berangkat']}</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Tujuan: ${item.Tujuan}</p>
-                        <a href="${item['Titik Jemput']}" target="_blank" class="text-xs text-blue-500 underline mt-2 block">
-                            <i class="fa-solid fa-location-dot"></i> Lihat Lokasi Jemput
-                        </a>
+        if (data.length > 0) {
+            // Ini blok sukses: Tombol Tutup + Data
+            container.innerHTML = `
+                <button onclick="document.getElementById('data-container').classList.add('hidden')" 
+                        class="w-full bg-gray-200 py-2 rounded-lg text-sm font-bold mb-2">
+                    <i class="fa-solid fa-times"></i> Tutup Daftar
+                </button>
+            ` + data.map(item => `
+                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-blue-800">${item.Nama}</h4>
+                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-md font-bold">${item['Jam Berangkat']}</span>
                     </div>
-                `).join('');
-            } else {
-                container.innerHTML = '<p class="text-gray-500 text-sm">Belum ada tebengan hari ini.</p>';
-            }
-        } catch (error) {
-
-container.innerHTML = `
-    <button onclick="document.getElementById('data-container').classList.add('hidden')" 
-            class="w-full bg-gray-200 py-2 rounded-lg text-sm font-bold mb-2">
-        <i class="fa-solid fa-times"></i> Tutup Daftar
-    </button>
-` + data.map(item => `
-    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-        <h4 class="font-bold text-blue-800">${item.Nama}</h4>
-        <p class="text-sm text-gray-600 mt-1">Tujuan: ${item.Tujuan}</p>
-        <a href="${item.TitikJemput}" target="_blank" class="text-xs text-blue-500 underline mt-2 block">
-            <i class="fa-solid fa-location-dot"></i> Lihat Lokasi Jemput
-        </a>
-    </div>
-`).join('');
-            console.error(error); // Ini untuk membantumu melihat error di Inspect Element
+                    <p class="text-sm text-gray-600 mt-1">Tujuan: ${item.Tujuan}</p>
+                    <a href="${item['Titik Jemput']}" target="_blank" class="text-xs text-blue-500 underline mt-2 block">
+                        <i class="fa-solid fa-location-dot"></i> Lihat Lokasi Jemput
+                    </a>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = '<p class="text-gray-500 text-sm">Belum ada tebengan hari ini.</p>';
         }
+    } catch (error) {
+        // Ini blok error: Hanya pesan error
+        container.innerHTML = '<p class="text-red-500 text-sm">Gagal memuat data. Silakan coba lagi.</p>';
+        console.error(error);
     }
+}
 
     loadDataTebengan();
 </script>
