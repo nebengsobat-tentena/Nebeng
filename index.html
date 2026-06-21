@@ -62,9 +62,10 @@
             </div>
             <div>
                 <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Titik Jemput (GPS)</label>
-                <button type="button" id="btn-lokasi"onclick="getLokasiOtomatis()" class="w-full mt-1 bg-gray-50 border border-dashed border-gray-300 py-3 rounded-xl text-blue-600 font-semibold text-sm">
-                    <id="icon-lokasi"i class="fa-solid fa-location-dot mr-2"></i> Dapatkan Lokasi Saya
-                </button>
+                <button type="button" id="btn-lokasi" onclick="getLokasiOtomatis()" class="w-full mt-1 bg-gray-50 border border-dashed border-gray-300 py-3 rounded-xl text-blue-600 font-semibold text-sm">
+    <span id="icon-lokasi"><i class="fa-solid fa-location-dot mr-2"></i></span> 
+    <span id="text-lokasi">Dapatkan Lokasi Saya</span>
+</button>
                 <input type="text" name="Titik Jemput" id="geo-link" class="w-full mt-2 p-2 border rounded-lg text-xs bg-gray-50" readonly required>
             </div>
             <div class="grid grid-cols-2 gap-3">
@@ -188,24 +189,27 @@
         
        async function getLokasiOtomatis() {
     const inputLink = document.getElementById('geo-link');
+    const btn = document.getElementById('btn-lokasi');
+    const text = document.getElementById('text-lokasi');
     
     if (navigator.geolocation) {
+        text.innerText = "Mengambil...";
         navigator.geolocation.getCurrentPosition((pos) => {
-            // Menggunakan format link Google Maps yang benar
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
+            // Format link yang benar untuk dibuka di HP
             inputLink.value = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
             
-            // Tambahkan notifikasi sukses visual jika kamu sudah pasang fitur centang
-            alert("Lokasi berhasil didapatkan!"); 
+            text.innerText = "Berhasil!";
+            btn.classList.add('border-green-500', 'text-green-600', 'bg-green-50');
         }, (err) => {
-            alert("Gagal mendapatkan lokasi. Pastikan izin akses lokasi diizinkan di browser.");
+            alert("Gagal. Aktifkan izin lokasi di browser.");
+            text.innerText = "Dapatkan Lokasi Saya";
         });
     } else {
-        alert("Browser Anda tidak mendukung fitur lokasi.");
+        alert("Browser tidak mendukung lokasi.");
     }
 }
-        }
         
         document.getElementById('nebengForm').onsubmit = async (e) => {
     e.preventDefault();
