@@ -7,6 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
+    <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+</style>
 </head>
 <body class="bg-gray-50 pb-20">
 
@@ -67,13 +70,13 @@
             <div class="grid grid-cols-2 gap-3">
                 <div>
     <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Jam</label>
-    <input type="text" name="Jam Berangkat" inputmode="decimal" pattern="[0-9\+\s]*" placeholder="07.00" class="w-full mt-1 p-3 border rounded-xl" required>
+    <input type="text" name="Jam Berangkat" inputmode="decimal" pattern="[0-9]*" placeholder="07.00" class="w-full mt-1 p-3 border rounded-xl" required>
     <p class="text-[10px] text-gray-400 mt-1">Format: 07.00</p>
 </div>
                 <div>
     <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">No. WhatsApp</label>
     <input type="text" name="No WA" id="no-wa" placeholder="+62 8xx xxx xxx xx" 
-           inputmode="numeric" pattern="[0-9]*"
+           inputmode="numeric" pattern="[0-9\+\s]*"
            class="w-full mt-1 p-3 border rounded-xl" 
            oninput="formatWA(this)" maxlength="18" required>
 </div>
@@ -185,37 +188,21 @@
         
        async function getLokasiOtomatis() {
     const inputLink = document.getElementById('geo-link');
-    const btn = document.getElementById('btn-lokasi');
-    const icon = document.getElementById('icon-lokasi');
-    const text = document.getElementById('text-lokasi');
-
+    
     if (navigator.geolocation) {
-        // Berikan indikasi sedang memuat
-        text.innerText = "Mengambil lokasi...";
-        
         navigator.geolocation.getCurrentPosition((pos) => {
-            inputLink.value = "https://www.google.com/maps/search/?api=1&query=" + pos.coords.latitude + "," + pos.coords.longitude;
+            // Menggunakan format link Google Maps yang benar
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            inputLink.value = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
             
-            // Berhasil: Ubah tampilan tombol
-            btn.classList.remove('border-dashed', 'border-gray-300', 'text-blue-600');
-            btn.classList.add('border-solid', 'border-green-500', 'text-green-600', 'bg-green-50');
-            icon.innerHTML = '<i class="fa-solid fa-check mr-2"></i>';
-            text.innerText = "Lokasi Berhasil Diambil!";
-            
-            // Kembalikan ke normal setelah 3 detik
-            setTimeout(() => {
-                btn.classList.remove('border-solid', 'border-green-500', 'text-green-600', 'bg-green-50');
-                btn.classList.add('border-dashed', 'border-gray-300', 'text-blue-600');
-                icon.innerHTML = '<i class="fa-solid fa-location-dot mr-2"></i>';
-                text.innerText = "Dapatkan Lokasi Saya";
-            }, 3000);
-            
+            // Tambahkan notifikasi sukses visual jika kamu sudah pasang fitur centang
+            alert("Lokasi berhasil didapatkan!"); 
         }, (err) => {
-            alert("Gagal mendapatkan lokasi. Pastikan GPS aktif.");
-            text.innerText = "Dapatkan Lokasi Saya";
+            alert("Gagal mendapatkan lokasi. Pastikan izin akses lokasi diizinkan di browser.");
         });
     } else {
-        alert("Browser tidak mendukung geolokasi.");
+        alert("Browser Anda tidak mendukung fitur lokasi.");
     }
 }
         }
