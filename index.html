@@ -71,10 +71,11 @@
     <p class="text-[10px] text-gray-400 mt-1">Format: 07.00</p>
 </div>
                 <div>
-                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">No. WA</label>
-                    <input type="tel" name="No WA" placeholder="08xx..." class="w-full mt-1 p-3 border rounded-xl" required>
-                </div>
-            </div>
+    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">No. WhatsApp</label>
+    <input type="text" name="No WA" id="no-wa" placeholder="+62 8xx xxx xxx" 
+           class="w-full mt-1 p-3 border rounded-xl" 
+           oninput="formatWA(this)" maxlength="16" required>
+</div>
             <input type="hidden" name="Created" value="x-sheetmonkey-current-date-time" />
             <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700">Buat Pengumuman</button>
         </form>
