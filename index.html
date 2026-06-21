@@ -59,8 +59,8 @@
             </div>
             <div>
                 <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Titik Jemput (GPS)</label>
-                <button type="button" onclick="getLokasiOtomatis()" class="w-full mt-1 bg-gray-50 border border-dashed border-gray-300 py-3 rounded-xl text-blue-600 font-semibold text-sm">
-                    <i class="fa-solid fa-location-dot mr-2"></i> Dapatkan Lokasi Saya
+                <button type="button" id="btn-lokasi"onclick="getLokasiOtomatis()" class="w-full mt-1 bg-gray-50 border border-dashed border-gray-300 py-3 rounded-xl text-blue-600 font-semibold text-sm">
+                    <id="icon-lokasi"i class="fa-solid fa-location-dot mr-2"></i> Dapatkan Lokasi Saya
                 </button>
                 <input type="text" name="Titik Jemput" id="geo-link" class="w-full mt-2 p-2 border rounded-lg text-xs bg-gray-50" readonly required>
             </div>
@@ -183,13 +183,41 @@
         function bukaDonasi() { document.getElementById('modal-donasi').classList.remove('hidden'); }
         function tutupDonasi() { document.getElementById('modal-donasi').classList.add('hidden'); }
         
-        async function getLokasiOtomatis() {
-            const inputLink = document.getElementById('geo-link');
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    inputLink.value = "https://www.google.com/maps/search/?api=1&query=" + pos.coords.latitude + "," + pos.coords.longitude;
-                });
-            }
+       async function getLokasiOtomatis() {
+    const inputLink = document.getElementById('geo-link');
+    const btn = document.getElementById('btn-lokasi');
+    const icon = document.getElementById('icon-lokasi');
+    const text = document.getElementById('text-lokasi');
+
+    if (navigator.geolocation) {
+        // Berikan indikasi sedang memuat
+        text.innerText = "Mengambil lokasi...";
+        
+        navigator.geolocation.getCurrentPosition((pos) => {
+            inputLink.value = "https://www.google.com/maps/search/?api=1&query=" + pos.coords.latitude + "," + pos.coords.longitude;
+            
+            // Berhasil: Ubah tampilan tombol
+            btn.classList.remove('border-dashed', 'border-gray-300', 'text-blue-600');
+            btn.classList.add('border-solid', 'border-green-500', 'text-green-600', 'bg-green-50');
+            icon.innerHTML = '<i class="fa-solid fa-check mr-2"></i>';
+            text.innerText = "Lokasi Berhasil Diambil!";
+            
+            // Kembalikan ke normal setelah 3 detik
+            setTimeout(() => {
+                btn.classList.remove('border-solid', 'border-green-500', 'text-green-600', 'bg-green-50');
+                btn.classList.add('border-dashed', 'border-gray-300', 'text-blue-600');
+                icon.innerHTML = '<i class="fa-solid fa-location-dot mr-2"></i>';
+                text.innerText = "Dapatkan Lokasi Saya";
+            }, 3000);
+            
+        }, (err) => {
+            alert("Gagal mendapatkan lokasi. Pastikan GPS aktif.");
+            text.innerText = "Dapatkan Lokasi Saya";
+        });
+    } else {
+        alert("Browser tidak mendukung geolokasi.");
+    }
+}
         }
         
         document.getElementById('nebengForm').onsubmit = async (e) => {
