@@ -144,10 +144,17 @@
                 <div class="bg-white p-4 rounded-2xl shadow-lg border border-gray-100">
                     <div class="flex justify-between items-center"><h4 class="font-bold text-gray-800">${item.Nama}</h4><span class="text-blue-600 font-black">${item['Jam Berangkat']}</span></div>
                     <div class="text-sm text-gray-600 my-1"><i class="fa-solid fa-location-dot mr-1 text-blue-500"></i> ${item.Tujuan}</div>
-                    <div class="mt-3 flex gap-2">
-                        <a href="${item['Titik Jemput']}" target="_blank" class="flex-1 text-center bg-gray-100 py-2 rounded-xl text-sm font-bold">Peta</a>
-                        <a href="https://wa.me/${item['No WA'].replace(/\s/g, '')}" target="_blank" ...>Chat Driver</a>
-                    </div>
+                    // Ganti bagian ini di dalam fungsi tampilkanData:
+<div class="mt-3 flex gap-2">
+    <!-- Tombol Peta lebih kecil (flex-1) -->
+    <a href="${item['Titik Jemput']}" target="_blank" class="flex-1 text-center bg-gray-100 py-2 rounded-xl text-sm font-bold text-gray-700">
+        Peta
+    </a>
+    <!-- Tombol Chat Driver lebih lebar (flex-[2]) dan warna hijau -->
+    <a href="https://wa.me/${item['No WA'].replace(/\s/g, '')}?text=Halo%20${item.Nama.split(' ')[0]},%20saya%20tertarik%20dengan%20tebengan%20ke%20${item.Tujuan}%20yang%20dibagikan%20lewat%20NebengSobat.%20Apakah%20joknya%20masih%20tersedia?" target="_blank" class="flex-[2] text-center bg-green-500 py-2 rounded-xl text-white text-sm font-bold shadow-md hover:bg-green-600 transition">
+    <i class="fa-brands fa-whatsapp mr-1"></i> Chat Driver
+</a>
+</div>
                 </div>`).join('') : '<p class="text-white text-center">Data tidak ditemukan.</p>';
         }
 
