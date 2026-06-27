@@ -197,7 +197,23 @@
     };
 
     // --- FUNGSI PENDUKUNG ---
-    function filterData() { /* ... kode filter kamu ... */ }
+    function filterData() {
+        const teks = document.getElementById('filterTujuan').value.toLowerCase();
+        const waktu = document.getElementById('filterWaktu').value;
+        const hasil = semuaData.filter(item => {
+            const cocokTujuan = item.Tujuan.toLowerCase().includes(teks);
+            let cocokWaktu = true;
+            if (item['Jam Berangkat']) {
+                const jam = parseInt(item['Jam Berangkat'].split(':')[0]);
+                if (waktu === 'Pagi') cocokWaktu = (jam >= 5 && jam < 11);
+                else if (waktu === 'Siang') cocokWaktu = (jam >= 11 && jam < 15);
+                else if (waktu === 'Sore') cocokWaktu = (jam >= 15 && jam < 18);
+                else if (waktu === 'Malam') cocokWaktu = (jam >= 18 || jam < 5);
+            }
+            return cocokTujuan && cocokWaktu;
+        });
+        tampilkanData(hasil);
+    }
     document.getElementById('btn-bagikan').onclick = () => document.getElementById('nebengForm').scrollIntoView({ behavior: 'smooth' });
     document.getElementById('btn-temukan').onclick = () => { document.getElementById('modal-jok').classList.remove('hidden'); loadDataTebengan(); };
     function tutupModal() { document.getElementById('modal-jok').classList.add('hidden'); }
