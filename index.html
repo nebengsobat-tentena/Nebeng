@@ -157,7 +157,7 @@
             const response = await fetch('https://sheetdb.io/api/v1/oi1whu4x406qs?sort_by=Created&sort_order=desc');
             semuaData = await response.json();
             tampilkanData(semuaData);
-        } catch (e) { container.innerHTML = '<p class="text-white text-center">Gagal memuat data.</p>'; }
+        } catch (e) { container.innerHTML = '<p class="text-white text-center p-4">Gagal memuat data.</p>'; }
     }
 
     function tampilkanData(data) {
@@ -173,131 +173,76 @@
                 </div>
                 
                 <div class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg inline-block mt-1">
-                    <i class="fa-solid fa-wallet mr-1"></i> Tarif: ${item.Tarif}
+                    <i class="fa-solid fa-wallet mr-1"></i> Tarif: ${item.Tarif || '-'}
                 </div>
 
                 <div class="mt-3 flex gap-2">
                     <a href="${item['Titik Jemput']}" target="_blank" class="flex-1 text-center bg-gray-100 py-2 rounded-xl text-sm font-bold text-gray-700">Peta</a>
-                    <a href="https://wa.me/${item['No WA'].replace(/\D/g, '')}?text=Halo%20${item.Nama.split(' ')[0]},%20saya%20tertarik%20dengan%20tebengan%20ke%20${item.Tujuan}%20dengan%20tarif%20${item.Tarif}." target="_blank" class="flex-[2] text-center bg-green-500 py-2 rounded-xl text-white text-sm font-bold shadow-md hover:bg-green-600 transition">
+                    <a href="https://wa.me/${item['No WA'].replace(/\D/g, '')}?text=Halo%20${item.Nama.split(' ')[0]},%20saya%20tertarik%20tebengan%20ke%20${item.Tujuan}%20dengan%20tarif%20${item.Tarif}." target="_blank" class="flex-[2] text-center bg-green-500 py-2 rounded-xl text-white text-sm font-bold shadow-md hover:bg-green-600 transition">
                         <i class="fa-brands fa-whatsapp mr-1"></i> Chat Driver
                     </a>
                 </div>
             </div>`).join('') : '<p class="text-white text-center">Data tidak ditemukan.</p>';
     }
-        
-</script>
-        function filterData() {
-            const teks = document.getElementById('filterTujuan').value.toLowerCase();
-            const waktu = document.getElementById('filterWaktu').value;
-            const hasil = semuaData.filter(item => {
-                const cocokTujuan = item.Tujuan.toLowerCase().includes(teks);
-                let cocokWaktu = true;
-                const jam = parseInt(item['Jam Berangkat'].split(':')[0]);
-                if (waktu === 'Pagi') cocokWaktu = (jam >= 5 && jam < 11);
-                else if (waktu === 'Siang') cocokWaktu = (jam >= 11 && jam < 15);
-                else if (waktu === 'Sore') cocokWaktu = (jam >= 15 && jam < 18);
-                else if (waktu === 'Malam') cocokWaktu = (jam >= 18 || jam < 5);
-                return cocokTujuan && cocokWaktu;
-            });
-            tampilkanData(hasil);
-        }
 
-        // Fungsi Pendukung lainnya
-        document.getElementById('btn-bagikan').onclick = () => document.getElementById('nebengForm').scrollIntoView({ behavior: 'smooth' });
-        document.getElementById('btn-temukan').onclick = () => { document.getElementById('modal-jok').classList.remove('hidden'); loadDataTebengan(); };
-        function tutupModal() { document.getElementById('modal-jok').classList.add('hidden'); }
-        function bukaDonasi() { document.getElementById('modal-donasi').classList.remove('hidden'); }
-        function tutupDonasi() { document.getElementById('modal-donasi').classList.add('hidden'); }
-        
-       async function getLokasiOtomatis() {
-    const inputLink = document.getElementById('geo-link');
-    const btn = document.getElementById('btn-lokasi');
-    const text = document.getElementById('text-lokasi');
-    
-    // Opsi agar lebih presisi
-    const options = {
-        enableHighAccuracy: true, // Memaksa browser menggunakan GPS jika tersedia
-        timeout: 10000,           // Waktu tunggu 10 detik
-        maximumAge: 0             // Tidak mengambil data lama
-    };
-    
-    if (navigator.geolocation) {
-        text.innerText = "Mendeteksi...";
-        navigator.geolocation.getCurrentPosition((pos) => {
-            const lat = pos.coords.latitude;
-            const lng = pos.coords.longitude;
-            
-            // Menggunakan format URL maps.google.com yang lebih stabil
-            // z=18 memberikan tampilan zoom yang sangat dekat (presisi)
-            inputLink.value = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-            
-            text.innerText = "Lokasi Ditemukan!";
-            btn.classList.add('border-green-500', 'text-green-600', 'bg-green-50');
-        }, (err) => {
-            alert("Gagal. Pastikan GPS HP aktif & beri izin lokasi.");
-            text.innerText = "Dapatkan Lokasi Saya";
-        }, options); // Menambahkan options di sini
-    } else {
-        alert("Browser tidak mendukung GPS.");
-    }
-}
-        
-        document.getElementById('nebengForm').onsubmit = async (e) => {
-    e.preventDefault();
-    
-    // 1. Ambil elemen tombol
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
-    
-    // 2. Ubah status tombol menjadi Loading
-    submitBtn.disabled = true;
-    submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
-    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengirim...';
-    
-    try {
-        // 3. Kirim data
-        await fetch('https://api.sheetmonkey.io/form/6xr8JzScmDA7KU84FLjKWp', { 
-            method: 'POST', 
-            body: new FormData(e.target) 
+    // Fungsi Pendukung
+    function filterData() {
+        const teks = document.getElementById('filterTujuan').value.toLowerCase();
+        const waktu = document.getElementById('filterWaktu').value;
+        const hasil = semuaData.filter(item => {
+            const cocokTujuan = item.Tujuan.toLowerCase().includes(teks);
+            let cocokWaktu = true;
+            const jam = parseInt(item['Jam Berangkat'].split(':')[0]);
+            if (waktu === 'Pagi') cocokWaktu = (jam >= 5 && jam < 11);
+            else if (waktu === 'Siang') cocokWaktu = (jam >= 11 && jam < 15);
+            else if (waktu === 'Sore') cocokWaktu = (jam >= 15 && jam < 18);
+            else if (waktu === 'Malam') cocokWaktu = (jam >= 18 || jam < 5);
+            return cocokTujuan && cocokWaktu;
         });
-        
-        // 4. Sukses: Reset form dan tampilkan pesan
-        alert('Berhasil! Jok kamu sudah dibagikan.');
-        e.target.reset();
-    } catch (error) {
-        alert('Gagal mengirim data, silakan coba lagi.');
-    } finally {
-        // 5. Kembalikan tombol ke kondisi semula
-        submitBtn.disabled = false;
-        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
-        submitBtn.innerHTML = originalText;
+        tampilkanData(hasil);
     }
-};
-    </script>
-    <script>
+
+    document.getElementById('btn-bagikan').onclick = () => document.getElementById('nebengForm').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('btn-temukan').onclick = () => { document.getElementById('modal-jok').classList.remove('hidden'); loadDataTebengan(); };
+    function tutupModal() { document.getElementById('modal-jok').classList.add('hidden'); }
+    function bukaDonasi() { document.getElementById('modal-donasi').classList.remove('hidden'); }
+    function tutupDonasi() { document.getElementById('modal-donasi').classList.add('hidden'); }
+
+    async function getLokasiOtomatis() {
+        const inputLink = document.getElementById('geo-link');
+        const btn = document.getElementById('btn-lokasi');
+        const text = document.getElementById('text-lokasi');
+        const options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
+        
+        if (navigator.geolocation) {
+            text.innerText = "Mendeteksi...";
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                inputLink.value = `https://www.google.com/maps?q=${lat},${lng}&z=18`;
+                text.innerText = "Lokasi Ditemukan!";
+                btn.classList.add('border-green-500', 'text-green-600', 'bg-green-50');
+            }, (err) => { alert("Gagal mendapatkan lokasi."); text.innerText = "Dapatkan Lokasi Saya"; }, options);
+        }
+    }
+
+    document.getElementById('nebengForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Mengirim...';
+        try {
+            await fetch('https://api.sheetmonkey.io/form/6xr8JzScmDA7KU84FLjKWp', { method: 'POST', body: new FormData(e.target) });
+            alert('Berhasil! Jok kamu sudah dibagikan.');
+            e.target.reset();
+        } catch (error) { alert('Gagal mengirim data.'); } finally { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fa-solid fa-rocket mr-2"></i> Bagikan Jok'; }
+    };
+
     function formatWA(input) {
         let val = input.value.replace(/\D/g, '');
         if (val.startsWith('0')) val = '62' + val.substring(1);
-        
-        let formatted = val;
-        if (val.length > 0) {
-            formatted = '+' + val.substring(0, 2);
-            if (val.length > 2) formatted += ' ' + val.substring(2, 5);
-            if (val.length > 5) formatted += ' ' + val.substring(5, 8);
-            if (val.length > 8) formatted += ' ' + val.substring(8, 11);
-            if (val.length > 11) formatted += ' ' + val.substring(11, 15);
-        }
-        input.value = formatted;
+        input.value = val.length > 0 ? '+' + val : '';
     }
-        // Tambahkan event listener di bagian bawah script kamu
-document.querySelector('input[name="Jam Berangkat"]').addEventListener('blur', function(e) {
-    let val = e.target.value.replace(/[^0-9]/g, ''); // Hapus semua selain angka
-    if (val.length >= 3 && val.length <= 4) {
-        let jam = val.length === 3 ? val.substring(0, 1) : val.substring(0, 2);
-        let menit = val.slice(-2);
-        e.target.value = jam.padStart(2, '0') + "." + menit;
-    }
-});
 </script>
     <footer class="text-center p-4 text-gray-400 text-[10px]">
     <p>NebengSobat Tentena © 2026</p>
