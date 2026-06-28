@@ -275,6 +275,11 @@ function tutupModalInfo() {
                     <a href="${item['Titik Jemput']}" target="_blank" class="flex-1 text-center bg-gray-100 py-2 rounded-xl text-sm font-bold text-gray-700">Peta</a>
                     <a href="https://wa.me/${item['No WA'].replace(/\D/g, '')}?text=Halo%20${item.Nama.split(' ')[0]},%20saya%20tertarik%20tebengan%20ke%20${item.Tujuan}" target="_blank" class="flex-[2] text-center bg-green-500 py-2 rounded-xl text-white text-sm font-bold shadow-md">Chat Driver</a>
                 </div>
+                <div class="mt-2 text-center">
+                <a href="https://wa.me/6282292067618?text=Halo%20Admin,%20saya%20ingin%20melaporkan%20pengemudi%20${item.Nama}%20dengan%20tujuan%20${item.Tujuan}%20karena:%20" target="_blank" class="text-[10px] text-red-500 underline font-medium">
+                    <i class="fa-solid fa-flag mr-1"></i> Laporkan pelanggaran
+                </a>
+            </div>
             </div>`).join('') : '<p class="text-white text-center">Data tidak ditemukan.</p>';
     }
 
