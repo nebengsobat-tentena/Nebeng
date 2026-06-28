@@ -160,20 +160,29 @@
 
     <!-- Donasi -->
     <div id="modal-donasi" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white p-6 rounded-2xl w-full max-w-sm text-center">
-            <!-- Tambahan kata-kata -->
-            <h3 class="font-bold text-gray-800 text-lg mb-2">Dukungan Komunitas</h3>
-            <p class="text-sm text-gray-600 mb-6">
-                Terima kasih telah menjadi bagian dari NebengSobat! Dukunganmu sangat berarti untuk pemeliharaan server dan pengembangan fitur-fitur dalam komunitas.
-            </p>
-            
-            <a href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012012021051353281852" target="_blank" class="block bg-blue-600 text-white px-6 py-4 rounded-2xl font-bold shadow-lg hover:bg-blue-700 transition">
-                <i class="fa-solid fa-heart mr-2"></i> Kirim Dukungan via DANA
-            </a>
-            <button onclick="tutupDonasi()" class="mt-5 text-gray-400 font-bold text-sm">Nanti saja</button>
-        </div>
-    </div>
+    <div class="bg-white p-6 rounded-2xl w-full max-w-sm text-center">
+        <!-- Judul -->
+        <h3 class="font-bold text-gray-800 text-lg mb-2">Dukung Komunitas</h3>
+        
+        <!-- Penjelasan -->
+        <p class="text-sm text-gray-600 mb-6">
+            Terima kasih telah menjadi bagian dari NebengSobat! Dukunganmu sangat berarti untuk menjaga server tetap aktif dan menghadirkan fitur-fitur baru bagi kita semua.
+        </p>
 
+        <!-- QRIS Area -->
+        <div class="mb-6">
+            <img src="qris_bisnis_nebeng.png" alt="QRIS NebengSobat" class="w-48 h-48 mx-auto border-2 border-gray-100 rounded-lg">
+            <p class="text-xs text-gray-500 mt-3 px-2">
+                Scan QRIS ini dengan aplikasi DANA, GoPay, OVO, ShopeePay, atau m-Banking apa saja.
+            </p>
+        </div>
+
+        <!-- Tombol Tutup -->
+        <button onclick="tutupDonasi()" class="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-bold hover:bg-gray-200 transition">
+            Tutup
+        </button>
+    </div>
+</div>
     <!-- Script Utama -->
     <script>
         function bukaTentangKami() {
