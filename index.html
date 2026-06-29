@@ -198,12 +198,11 @@ window.onload = function() {
 };
 
 // Fungsi saat tombol diklik
-document.getElementById('btn-setuju').onclick = function() {
-    // Simpan kunci ke memori HP
+document.getElementById('btn-setuju').addEventListener('click', function() {
     localStorage.setItem('sudahSetuju', 'true');
-    // Tutup modal
     document.getElementById('tos-modal').style.display = 'none';
-};
+    console.log("Tombol diklik dan status disimpan!"); 
+});
         function bukaTentangKami() {
     const narasi = `NebengSobat Tentena adalah inisiatif berbasis teknologi yang hadir untuk memfasilitasi kebutuhan mobilitas harian civitas akademika dan Pelajar Tentena dengan semangat "Dibuat oleh Sobat untuk Sobat". Kami berfokus pada efisiensi, aksesibilitas, dan penguatan nilai gotong-royong.
 
@@ -380,7 +379,7 @@ function tutupModalInfo() {
     </div>
 </div>
    <!-- Modal ToS -->
-<div id="tos-modal" style="display:flex; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; padding: 10px;">
+<div id="tos-modal" style="display:flex; position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; padding: 10px;">
     <div style="background:white; padding:25px; border-radius:15px; width:90%; max-width:500px; display: flex; flex-direction: column; max-height: 90vh;">
         
         <!-- Area Teks (Bisa di-scroll) -->
@@ -406,9 +405,9 @@ function tutupModalInfo() {
         </div>
 
         <!-- Tombol (Tetap di bawah dan pasti bisa diklik) -->
-        <button id="btn-setuju" style="padding:15px; background:#28a745; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px;">
-            Saya Setuju & Mulai
-        </button>
+        <button id="btn-setuju" style="padding:15px; background:#28a745; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px; pointer-events: auto; z-index: 10000; position: relative;">
+    Saya Setuju & Mulai
+</button>
     </div>
 </div>
 </body>
