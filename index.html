@@ -8,11 +8,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
     <style>
+        #splash-screen {
+    position: fixed; inset: 0; background: #2563eb;
+    z-index: 99999; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity 0.5s ease;
+}
+#splash-screen img { width: 80px; height: 80px; border-radius: 16px; background: white; padding: 8px; animation: splashPulse 1s ease-in-out; }
+#splash-screen h1 { color: white; font-size: 22px; font-weight: bold; margin-top: 16px; animation: splashFade 1s ease-in-out; }
+#splash-screen p { color: #bfdbfe; font-size: 13px; margin-top: 4px; animation: splashFade 1.2s ease-in-out; }
+@keyframes splashPulse {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+@keyframes splashFade {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 </style>
 </head>
 <body class="bg-gray-50 pb-20">
-
+<div id="splash-screen">
+    <img src="logo.png" alt="Logo NebengSobat">
+    <h1>NebengSobat Tentena</h1>
+    <p>Komunitas Tebengan</p>
+</div>
     <!-- Header -->
     <header class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
         <div id="menu-side" class="fixed inset-0 bg-black bg-opacity-50 z-[100] hidden transition-opacity duration-300" onclick="tutupMenu()">
@@ -232,6 +253,14 @@
 </div>
     <!-- Script Utama -->
     <script>
+        // Splash screen
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        splash.style.opacity = '0';
+        setTimeout(() => splash.style.display = 'none', 500);
+    }, 1800); // tampil selama 1.8 detik
+});
         function formatJam(input) {
     let val = input.value.replace(/\D/g, ''); // Hapus semua selain angka
     if (val.length > 2) {
@@ -394,19 +423,25 @@ function tutupModalInfo() {
     function bukaDonasi() { document.getElementById('modal-donasi').classList.remove('hidden'); }
     function tutupDonasi() { document.getElementById('modal-donasi').classList.add('hidden'); }
 
-    function tampilNotif() {
-    const notif = document.getElementById('notif-berhasil');
-    notif.classList.remove('hidden');
-    notif.classList.remove('opacity-0');
-    notif.classList.add('opacity-100');
-}
+     function tampilNotif() {
+            const notif = document.getElementById('notif-berhasil');
+            notif.classList.remove('hidden');
+            // Tunggu 1 frame agar 'hidden' benar-benar sudah dihapus sebelum animasi jalan
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    notif.classList.remove('opacity-0');
+                    notif.classList.add('opacity-100');
+                });
+            });
+        }
 
-function tutupNotif() {
-    const notif = document.getElementById('notif-berhasil');
-    notif.classList.remove('opacity-100');
-    notif.classList.add('opacity-0');
-    setTimeout(() => notif.classList.add('hidden'), 300);
-}
+        function tutupNotif() {
+            const notif = document.getElementById('notif-berhasil');
+            notif.classList.remove('opacity-100');
+            notif.classList.add('opacity-0');
+            setTimeout(() => notif.classList.add('hidden'), 300);
+        }
+
         function formatWA(input) {
         // Menghapus karakter non-angka kecuali tanda '+'
         let value = input.value.replace(/[^\d+]/g, '');
