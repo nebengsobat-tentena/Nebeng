@@ -27,6 +27,78 @@
 }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 </style>
+    .umkm-board-section {
+    padding: 20px;
+    background-color: #f9f9fa;
+    border-radius: 12px;
+    margin-top: 20px;
+}
+
+.board-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.bulletin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.umkm-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.umkm-card:hover {
+    transform: translateY(-2px);
+}
+
+.umkm-name {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.product-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #222;
+    margin: 5px 0;
+}
+
+.product-desc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.wa-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: #25D366; /* Warna khas WhatsApp */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.wa-btn:active {
+    background-color: #1DA851;
+}
 </head>
 <body class="bg-gray-50 pb-20">
 <div id="splash-screen">
@@ -166,6 +238,14 @@
             <div class="mt-4 text-[10px] text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-200">
     <p><b>Catatan Keselamatan:</b> Dengan membagikan/menggunakan tumpangan, Anda setuju bahwa keselamatan adalah tanggung jawab pribadi. Pastikan pengemudi memiliki SIM, menggunakan dan menyediakan helm, serta mematuhi aturan lalu lintas. NebengSobat hanyalah platform penghubung.</p>
 </div>
+            <!-- Wrapper Papan Pengumuman -->
+<div class="umkm-board-section">
+    <h3 class="board-title">Papan Pengumuman & UMKM Lokal</h3>
+    <!-- Kontainer ini akan diisi otomatis oleh JavaScript -->
+    <div id="bulletin-container" class="bulletin-grid">
+        <p>Memuat iklan lokal...</p>
+    </div>
+</div>
         </form>
     </main>
 
@@ -253,6 +333,73 @@
 </div>
     <!-- Script Utama -->
     <script>
+        // Ganti dengan API URL SheetDB kamu
+const SHEETDB_URL = 'https://sheetdb.io/api/v1/oi1whu4x406qs'; 
+
+// Fungsi untuk mengambil dan menampilkan data UMKM
+async function loadBulletinBoard() {
+    const container = document.getElementById('bulletin-container');
+    
+    try {
+        const response = await fetch(SHEETDB_URL);
+        const data = await response.json();
+        
+        container.innerHTML = ''; // Bersihkan loading text
+        
+        data.forEach(item => {
+            // Buat komponen kartu
+            const card = document.createElement('div');
+            card.className = 'umkm-card';
+            
+            card.innerHTML = `
+                <div class="umkm-name">${item.nama_umkm}</div>
+                <div class="product-name">${item.produk}</div>
+                <div class="product-desc">${item.deskripsi}</div>
+                <button class="wa-btn" 
+                    onclick="handleWaClick('${item.id}', '${item.nomor_wa}', '${item.produk}', '${item.jumlah_klik}')">
+                    Hubungi Penjual via WA
+                </button>
+            `;
+            container.appendChild(card);
+        });
+    } catch (error) {
+        container.innerHTML = '<p>Gagal memuat pengumuman. Silakan coba lagi nanti.</p>';
+        console.error('Error fetching data:', error);
+    }
+}
+
+// Fungsi Pelacakan dan Redirect (Optimistic Tracking)
+function handleWaClick(id, nomorWa, namaProduk, currentClicks) {
+    // 1. Siapkan URL WhatsApp dan Pesan Otomatis
+    const pesan = `Halo, saya tertarik dengan produk ${namaProduk} yang saya lihat di NebengSobat.`;
+    const waUrl = `https://wa.me/${nomorWa}?text=${encodeURIComponent(pesan)}`;
+    
+    // 2. Langsung Buka WhatsApp di Tab Baru (Performa super cepat untuk user)
+    window.open(waUrl, '_blank');
+    
+    // 3. Lakukan proses update jumlah klik di Background (Tidak mengganggu user)
+    const newClicks = parseInt(currentClicks || 0) + 1;
+    
+    // Query PATCH ke SheetDB untuk mengupdate baris berdasarkan 'id'
+    fetch(`${SHEETDB_URL}/id/${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            data: {
+                'jumlah_klik': newClicks
+            }
+        })
+    })
+    .then(response => response.json())
+    .then(data => console.log('Tracking berhasil dicatat:', data))
+    .catch(error => console.error('Gagal mencatat tracking:', error));
+}
+
+// Jalankan fungsi saat halaman selesai dimuat
+document.addEventListener('DOMContentLoaded', loadBulletinBoard);
         // Splash screen
 window.addEventListener('load', () => {
     setTimeout(() => {
