@@ -355,14 +355,15 @@
                 card.className = 'umkm-card';
                 
                 card.innerHTML = `
-                    <div class="umkm-name">${item.nama_umkm}</div>
-                    <div class="product-name">${item.produk}</div>
-                    <div class="product-desc">${item.deskripsi}</div>
-                    <button class="wa-btn" 
-                        onclick="handleWaClick('${item.id}', '${item.nomor_wa}', '${item.produk}', '${item.jumlah_klik}')">
-                        Hubungi Penjual via WA
-                    </button>
-                `;
+    <img src="${item.foto_url}" alt="${item.produk}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+    <div class="umkm-name">${item.nama_umkm}</div>
+    <div class="product-name">${item.produk}</div>
+    <div class="product-desc">${item.deskripsi}</div>
+    <button class="wa-btn" 
+        onclick="handleWaClick('${item.id}', '${item.nomor_wa}', '${item.produk}', '${item.jumlah_klik}')">
+        Hubungi Penjual via WA
+    </button>
+`;
                 container.appendChild(card);
             });
         } catch (error) {
