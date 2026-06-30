@@ -102,49 +102,41 @@
     background-color: #1DA851;
 }
 </style>
- <style>     
+<style>
     .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    border-top: 1px solid #ddd;
-    z-index: 9999; /* Agar selalu di atas semua konten */
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-}
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        border-top: 1px solid #ddd;
+        z-index: 9999;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
 
-.bottom-nav a {
-    text-decoration: none;
-    color: #555;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 18px; /* Ukuran icon */
-}
+    .bottom-nav a {
+        text-decoration: none;
+        color: #555; /* Warna polos/abu-abu */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 18px;
+        transition: color 0.3s; /* Animasi halus */
+    }
 
-.bottom-nav a small {
-    font-size: 10px; /* Ukuran teks bawah icon */
-    margin-top: 4px;
-}
-  .bottom-nav a {
-    text-decoration: none;
-    color: #555; /* Warna polos/abu-abu */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 18px;
-    transition: color 0.3s; /* Animasi halus */
-}
+    .bottom-nav a small {
+        font-size: 10px;
+        margin-top: 4px;
+    }
 
-/* Warna saat tombol ditekan/aktif */
-.bottom-nav a.active-nav {
-    color: #2563eb; /* Warna biru */
-}   
- </style>    
+    /* Warna saat tombol ditekan/aktif */
+    .bottom-nav a.active-nav {
+        color: #2563eb; /* Warna biru */
+    }
+</style>
 </head>
 <body class="bg-gray-50 pb-20">
 <div id="splash-screen">
