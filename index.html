@@ -130,6 +130,20 @@
     font-size: 10px; /* Ukuran teks bawah icon */
     margin-top: 4px;
 }
+  .bottom-nav a {
+    text-decoration: none;
+    color: #555; /* Warna polos/abu-abu */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 18px;
+    transition: color 0.3s; /* Animasi halus */
+}
+
+/* Warna saat tombol ditekan/aktif */
+.bottom-nav a.active-nav {
+    color: #2563eb; /* Warna biru */
+}   
  </style>    
 </head>
 <body class="bg-gray-50 pb-20">
@@ -437,6 +451,16 @@
 </script>
     <!-- Script Utama -->
     <script>
+        function setAktif(id) {
+    // 1. Ambil semua link di bottom-nav
+    const links = document.querySelectorAll('.bottom-nav a');
+    
+    // 2. Hapus class 'active-nav' dari semua link
+    links.forEach(link => link.classList.remove('active-nav'));
+    
+    // 3. Tambahkan class 'active-nav' ke link yang diklik
+    document.getElementById(id).classList.add('active-nav');
+}
         // Splash screen
 window.addEventListener('load', () => {
     setTimeout(() => {
@@ -654,19 +678,19 @@ function tutupModalInfo() {
     </div>
 </div>
     <div class="bottom-nav">
-    <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">
+    <a href="#" id="nav-beranda" class="active-nav" onclick="setAktif('nav-beranda'); window.scrollTo({top: 0, behavior: 'smooth'}); return false;">
         <span>🏠</span><small>Beranda</small>
     </a>
-    <a href="#" onclick="bukaModalInfo('Cara Pakai', '1. Bagikan Jok jika punya kendaraan.\n2. Klik Temukan Jok untuk mencari tumpangan.\n3. Chat driver untuk konfirmasi.'); return false;">
+    <a href="#" id="nav-cara" onclick="setAktif('nav-cara'); bukaModalInfo('Cara Pakai', '...'); return false;">
         <span>💡</span><small>Cara Pakai</small>
     </a>
-    <a href="#" onclick="bukaDonasi(); return false;">
+    <a href="#" id="nav-dukung" onclick="setAktif('nav-dukung'); bukaDonasi(); return false;">
         <span>❤️</span><small>Dukungan</small>
     </a>
-    <a href="https://wa.me/6282292067618" target="_blank">
+    <a href="https://wa.me/6282292067618" id="nav-admin" target="_blank" onclick="setAktif('nav-admin')">
         <span>💬</span><small>Admin</small>
     </a>
-    <a href="#" onclick="bukaTentangKami(); return false;">
+    <a href="#" id="nav-tentang" onclick="setAktif('nav-tentang'); bukaTentangKami(); return false;">
         <span>👥</span><small>Tentang</small>
     </a>
 </div>
