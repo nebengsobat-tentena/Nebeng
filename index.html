@@ -7,6 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="logo.png">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Konfigurasi koneksi Supabase (menggantikan SheetDB & SheetMonkey)
+        const SUPABASE_URL = 'https://jdmvepfxiuvjsebvypfa.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_6VCuASp19-VvDklo6zAspg_elcuAWf4';
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
     <style>
         #splash-screen {
     position: fixed; inset: 0; background: #2563eb;
@@ -267,8 +276,6 @@
     </div>
 </div>
 
-<input type="hidden" name="Created" value="x-sheetmonkey-current-date-time" />
-
 <div class="flex gap-3 w-full mt-4">
     <button type="submit" class="flex-[7] bg-blue-600 text-white py-4 rounded-xl font-bold shadow-md hover:bg-blue-700 transition active:scale-95 flex items-center justify-center text-sm md:text-base">
         <i class="fa-solid fa-rocket mr-2"></i> <span>Bagikan Jok</span>
@@ -375,19 +382,16 @@
     </div>
 </div>
     <script>
-    // 1. Pisahkan ID API dan Nama Tab
-    const API_ID = 'oi1whu4x406qs'; 
-    const TAB_NAME = 'iklan UMKM'; // Pastikan nama tab di Spreadsheet-mu SAMA PERSIS dengan ini
-    const BASE_URL = `https://sheetdb.io/api/v1/${API_ID}`;
+    // Nama tabel Supabase untuk Papan Iklan UMKM (menggantikan API_ID/TAB_NAME SheetDB)
+    const TABLE_UMKM = 'iklan_umkm';
 
     // Fungsi untuk mengambil dan menampilkan data UMKM
     async function loadBulletinBoard() {
         const container = document.getElementById('bulletin-container');
         
         try {
-            // PERBAIKAN 1: Menambahkan pemanggilan parameter ?sheet=TAB_NAME saat mengambil data
-            const response = await fetch(`${BASE_URL}?sheet=${TAB_NAME}`);
-            const data = await response.json();
+            const { data, error } = await sb.from(TABLE_UMKM).select('*');
+            if (error) throw error;
             
             container.innerHTML = ''; // Bersihkan loading text
             
@@ -414,7 +418,7 @@
     }
 
     // Fungsi Pelacakan dan Redirect (Optimistic Tracking)
-    function handleWaClick(id, nomorWa, namaProduk, currentClicks) {
+    async function handleWaClick(id, nomorWa, namaProduk, currentClicks) {
         // 1. Siapkan URL WhatsApp dan Pesan Otomatis
         const pesan = `Halo, saya tertarik dengan produk ${namaProduk} yang saya lihat di NebengSobat.`;
         const waUrl = `https://wa.me/${nomorWa}?text=${encodeURIComponent(pesan)}`;
@@ -425,22 +429,13 @@
         // 3. Lakukan proses update jumlah klik di Background
         const newClicks = parseInt(currentClicks || 0) + 1;
         
-        // PERBAIKAN 2: Menambahkan pemanggilan parameter ?sheet=TAB_NAME saat mengirim data (PATCH)
-        fetch(`${BASE_URL}/id/${id}?sheet=${TAB_NAME}`, {
-            method: 'PATCH',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                data: {
-                    'jumlah_klik': newClicks
-                }
-            })
-        })
-        .then(response => response.json())
-        .then(data => console.log('Tracking berhasil dicatat:', data))
-        .catch(error => console.error('Gagal mencatat tracking:', error));
+        try {
+            const { error } = await sb.from(TABLE_UMKM).update({ jumlah_klik: newClicks }).eq('id', id);
+            if (error) throw error;
+            console.log('Tracking berhasil dicatat:', newClicks);
+        } catch (error) {
+            console.error('Gagal mencatat tracking:', error);
+        }
     }
 
     // Jalankan fungsi saat halaman selesai dimuat
@@ -530,6 +525,7 @@ function tutupModalInfo() {
     document.getElementById('modal-info').classList.add('hidden');
 }
     let semuaData = [];
+    const TABLE_TEBENGAN = 'tebengan';
 // --- TAMBAHKAN FUNGSI INI ---
     async function getLokasiOtomatis() {
         const inputLink = document.getElementById('geo-link');
@@ -558,8 +554,14 @@ function tutupModalInfo() {
         const container = document.getElementById('modal-data-container');
         container.innerHTML = '<p class="text-white text-center p-4">Memuat data...</p>';
         try {
-            const response = await fetch('https://sheetdb.io/api/v1/oi1whu4x406qs?sort_by=Created&sort_order=desc');
-            semuaData = await response.json();
+            const satuJamLalu = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+            const { data, error } = await sb
+                .from(TABLE_TEBENGAN)
+                .select('*')
+                .gte('created_at', satuJamLalu)
+                .order('created_at', { ascending: false });
+            if (error) throw error;
+            semuaData = data;
             tampilkanData(semuaData);
         } catch (e) { container.innerHTML = '<p class="text-white text-center p-4">Gagal memuat data.</p>'; }
     }
@@ -569,17 +571,17 @@ function tutupModalInfo() {
         container.innerHTML = data.length > 0 ? data.map(item => `
             <div class="bg-white p-4 rounded-2xl shadow-lg border border-gray-100">
                 <div class="flex justify-between items-center">
-                    <h4 class="font-bold text-gray-800">${item.Nama}</h4>
-                    <span class="text-blue-600 font-black">${item['Jam Berangkat']}</span>
+                    <h4 class="font-bold text-gray-800">${item.nama}</h4>
+                    <span class="text-blue-600 font-black">${item.jam_berangkat}</span>
                 </div>
-                <div class="text-sm text-gray-600 my-1"><i class="fa-solid fa-location-dot mr-1 text-blue-500"></i> ${item.Tujuan}</div>
-                <div class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg inline-block mt-1">Tarif: ${item.Tarif || '-'}</div>
+                <div class="text-sm text-gray-600 my-1"><i class="fa-solid fa-location-dot mr-1 text-blue-500"></i> ${item.tujuan}</div>
+                <div class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg inline-block mt-1">Tarif: ${item.tarif || '-'}</div>
                 <div class="mt-3 flex gap-2">
-                    <a href="${item['Titik Jemput']}" target="_blank" class="flex-1 text-center bg-gray-100 py-2 rounded-xl text-sm font-bold text-gray-700">Peta</a>
-                    <a href="https://wa.me/${item['No WA'].replace(/\D/g, '')}?text=Halo%20${item.Nama.split(' ')[0]},%20saya%20tertarik%20tebengan%20ke%20${item.Tujuan}" target="_blank" class="flex-[2] text-center bg-green-500 py-2 rounded-xl text-white text-sm font-bold shadow-md">Chat Driver</a>
+                    <a href="${item.titik_jemput}" target="_blank" class="flex-1 text-center bg-gray-100 py-2 rounded-xl text-sm font-bold text-gray-700">Peta</a>
+                    <a href="https://wa.me/${item.no_wa.replace(/\D/g, '')}?text=Halo%20${item.nama.split(' ')[0]},%20saya%20tertarik%20tebengan%20ke%20${item.tujuan}" target="_blank" class="flex-[2] text-center bg-green-500 py-2 rounded-xl text-white text-sm font-bold shadow-md">Chat Driver</a>
                 </div>
                 <div class="mt-2 text-center">
-                <a href="https://wa.me/6282292067618?text=Halo%20Admin,%20saya%20ingin%20melaporkan%20pengemudi%20${item.Nama}%20dengan%20tujuan%20${item.Tujuan}%20karena:%20" target="_blank" class="text-[10px] text-red-500 underline font-medium">
+                <a href="https://wa.me/6282292067618?text=Halo%20Admin,%20saya%20ingin%20melaporkan%20pengemudi%20${item.nama}%20dengan%20tujuan%20${item.tujuan}%20karena:%20" target="_blank" class="text-[10px] text-red-500 underline font-medium">
                     <i class="fa-solid fa-flag mr-1"></i> Laporkan pelanggaran
                 </a>
             </div>
@@ -594,10 +596,23 @@ function tutupModalInfo() {
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengirim...';
         
         try {
-            await fetch('https://api.sheetmonkey.io/form/6xr8JzScmDA7KU84FLjKWp', { method: 'POST', body: new FormData(e.target) });
+            const formData = new FormData(e.target);
+            const payload = {
+                nama: formData.get('Nama'),
+                tujuan: formData.get('Tujuan'),
+                titik_jemput: formData.get('Titik Jemput'),
+                tarif: Number(formData.get('Tarif')),
+                jam_berangkat: formData.get('Jam Berangkat'),
+                no_wa: formData.get('No WA')
+            };
+            const { error } = await sb.from(TABLE_TEBENGAN).insert([payload]);
+            if (error) throw error;
             tampilNotif(); // Memanggil notifikasi keren
             e.target.reset();
-        } catch (error) { alert('Gagal mengirim data.'); } 
+        } catch (error) { 
+            console.error('Gagal mengirim data:', error);
+            alert('Gagal mengirim data.'); 
+        } 
         finally { 
             submitBtn.disabled = false; 
             submitBtn.innerHTML = '<i class="fa-solid fa-rocket mr-2"></i> Bagikan Jok'; 
@@ -609,10 +624,10 @@ function tutupModalInfo() {
         const teks = document.getElementById('filterTujuan').value.toLowerCase();
         const waktu = document.getElementById('filterWaktu').value;
         const hasil = semuaData.filter(item => {
-            const cocokTujuan = item.Tujuan.toLowerCase().includes(teks);
+            const cocokTujuan = item.tujuan.toLowerCase().includes(teks);
             let cocokWaktu = true;
-            if (item['Jam Berangkat']) {
-                const jam = parseInt(item['Jam Berangkat'].split('.')[0]);
+            if (item.jam_berangkat) {
+                const jam = parseInt(item.jam_berangkat.split('.')[0]);
                 if (waktu === 'Pagi') cocokWaktu = (jam >= 5 && jam < 11);
                 else if (waktu === 'Siang') cocokWaktu = (jam >= 11 && jam < 15);
                 else if (waktu === 'Sore') cocokWaktu = (jam >= 15 && jam < 18);
